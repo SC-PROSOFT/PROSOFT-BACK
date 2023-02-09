@@ -22,7 +22,7 @@ const asigna_modulos_schema = new Schema<asigmodulos>({
 asigna_modulos_schema.pre("save", async function (next) {
     const modulos = await modulos_schema.find()
 
-    //console.log(modulos)
+    ////console.log(modulos)
     //this.modulos = [modulos]
 
     next()

@@ -9,7 +9,7 @@ export const getusuvue = async (req: Request, res: Response) => {
     let llaveResp: any;
     llaveResp = req.query.llave;
     clave = req.query.clave;
-    console.log(llaveResp, clave);
+    //console.log(llaveResp, clave);
     if (!clave) clave = "TlVFVk8xMjM=";
     const data = await usuvue_model
       .aggregate([
@@ -101,7 +101,7 @@ export const getusuvue = async (req: Request, res: Response) => {
       get_response("usuvue", data, "", res);
     }
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.json({ msg: error });
   }
 };
@@ -115,9 +115,9 @@ export const cambiarContra = async (req: Request, res: Response) => {
 
     if (user) {
       const new_password = await bcrypt.hash(atob(nueva_pass), 10);
-      console.log(llave);
+      //console.log(llave);
       const data = await usuvue_model.updateOne({ llaveOper: llave }, { $set: { clave: new_password } });
-      console.log(data);
+      //console.log(data);
       edit_response("usuvue", data, llave, res);
     } else {
       res.json({ msg: "error perro" });

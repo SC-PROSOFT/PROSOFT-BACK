@@ -25,6 +25,7 @@ const activ_schema = new Schema<activ>({
   },
   codigo: {
     type: String,
+    unique:true,
     required: true,
   },
   nombre: {

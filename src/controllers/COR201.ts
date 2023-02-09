@@ -1,6 +1,14 @@
 import { Request, Response } from "express";
 import nodemailer from "nodemailer";
-import { concatenarCodigos, delete_response, padStart, edit_response, get_all_response, get_response, omitirId } from "../global/global";
+import {
+  concatenarCodigos,
+  delete_response,
+  padStart,
+  edit_response,
+  get_all_response,
+  get_response,
+  omitirId,
+} from "../global/global";
 import fs from "fs";
 import { corres_model } from "../models/CORRES";
 import { pdf_res_model } from "../models/pdf-res";
@@ -115,7 +123,11 @@ export const getCorres = async (req: Request, res: Response) => {
         contLlave: { $toString: ["$llave.cont"] },
         fecha: { $substr: ["$fecha", 0, 10] },
         hora: {
-          $concat: [padStart({ $toString: { $hour: "$fecha" } }, 2, "0"), ":", padStart({ $toString: { $minute: "$fecha" } }, 2, "0")],
+          $concat: [
+            padStart({ $toString: { $hour: "$fecha" } }, 2, "0"),
+            ":",
+            padStart({ $toString: { $minute: "$fecha" } }, 2, "0"),
+          ],
         },
         nit: { $toString: ["$nit"] },
         tipoCorres: 1,
@@ -337,7 +349,18 @@ export const getCorresF8 = async (req: Request, res: Response) => {
 
 export const envioCorreos = async (req: Request, res: Response) => {
   try {
-    const { server_email, remitente, clave, puerto, id, propietario, anoLlave, cont, destino, nom_empresa } = req.body;
+    const {
+      server_email,
+      remitente,
+      clave,
+      puerto,
+      id,
+      propietario,
+      anoLlave,
+      cont,
+      destino,
+      nom_empresa,
+    } = req.body;
 
     const llave = {
       anoLlave: parseInt(anoLlave),
@@ -395,12 +418,19 @@ export const ultCorres = async (req: Request, res: Response) => {
           _id: 0,
           llave: 1,
           llaveR: {
-            $concat: [{ $toString: "$llave.anoLlave" }, { $toString: "$llave.cont" }],
+            $concat: [
+              { $toString: "$llave.anoLlave" },
+              { $toString: "$llave.cont" },
+            ],
           },
           fecha: 1,
           fechaR: { $substr: ["$fecha", 0, 10] },
           hora: {
-            $concat: [padStart({ $toString: { $hour: "$fecha" } }, 2, "0"), ":", padStart({ $toString: { $minute: "$fecha" } }, 2, "0")],
+            $concat: [
+              padStart({ $toString: { $hour: "$fecha" } }, 2, "0"),
+              ":",
+              padStart({ $toString: { $minute: "$fecha" } }, 2, "0"),
+            ],
           },
         }
       )
@@ -415,6 +445,7 @@ export const ultCorres = async (req: Request, res: Response) => {
 
 export const guardarPdf = async (req: Request, res: Response) => {
   try {
+    console.log("llegue");
     const filename = `${req.params.anoLlave}${req.params.cont}`;
 
     const llave = {
@@ -422,45 +453,51 @@ export const guardarPdf = async (req: Request, res: Response) => {
       cont: parseInt(req.params.cont),
     };
 
-    fs.readFile(`.\\pdf\\${filename}.pdf`, function (err, data) {
+    const ruta = `D:\\pdf\\${filename}.pdf`;
+    fs.readFile(ruta, function (err, data) {
       if (err) throw err;
-      const pdf = data.toString("base64"); //PDF WORKS
 
-      new pdf_model({ llave: llave, archivo: pdf }).save((err: any) => {
+      new pdf_model({ llave: llave, archivo: ruta }).save((err: any) => {
         if (err) {
-          if (err.code) res.json({ msg: `Ya existe la correspondencia`, cod_error: "00" });
+          if (err.code)
+            res.json({ msg: `Ya existe la correspondencia`, cod_error: "00" });
           else res.json(err);
         } else res.json({ N1: "guardado" });
       });
 
-      fs.unlink(`.\\pdf\\${filename}.pdf`, (err) => {
-        if (err) throw err;
-      });
+      // fs.unlink(ruta, (err) => {
+      //   if (err) throw err;
+      // });
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log("F");
+    res.json({ msg: error });
+  }
 };
 
 export const guardarPdf_res = async (req: Request, res: Response) => {
   try {
-    const filename = `${req.params.anoLlave}${req.params.cont}`;
+    const filename = `${req.params.anoLlave}${req.params.cont}-RES`;
     const llave = {
       anoLlave: parseInt(req.params.anoLlave),
       cont: parseInt(req.params.cont),
     };
-    fs.readFile(`.\\pdf\\${filename}.pdf`, function (err, data) {
+    const ruta = `D:\\pdf\\${filename}.pdf`;
+    fs.readFile(`D:\\pdf\\${filename}.pdf`, function (err, data) {
       if (err) throw err;
       const pdf = data.toString("base64"); //PDF WORKS
 
-      new pdf_res_model({ llave: llave, archivo: pdf }).save((err: any) => {
+      new pdf_res_model({ llave: llave, archivo: ruta }).save((err: any) => {
         if (err) {
-          if (err.code) res.json({ msg: `Ya existe la correspondencia`, cod_error: "00" });
+          if (err.code)
+            res.json({ msg: `Ya existe la correspondencia`, cod_error: "00" });
           else res.json(err);
         } else res.json({ N1: "guardado" });
       });
 
-      fs.unlink(`.\\pdf\\${filename}.pdf`, (err) => {
-        if (err) throw err;
-      });
+      // fs.unlink(`D:\\pdf\\${filename}.pdf`, (err) => {
+      //   if (err) throw err;
+      // });
     });
   } catch (error) {}
 };
@@ -474,10 +511,13 @@ export const buscarPdf = async (req: Request, res: Response) => {
     const datos = await pdf_model.findOne({ llave: llave });
     if (datos) {
       res.contentType("application/pdf");
-      let base64 = "";
-      if (datos?.archivo) base64 = datos?.archivo.toString();
-      var pdf = Buffer.from(base64, "base64");
-      res.send(pdf);
+      fs.readFile(`${datos.archivo}`, function (err, data) {
+        !err
+          ? res.send(data)
+          : res
+              .status(405)
+              .json({ cod_error: "01", msg: "No se encontro el directorio." });
+      });
     } else {
       res.json({ msg: `El pdf solicitado no existe`, cod_error: "01" });
     }
@@ -492,10 +532,13 @@ export const buscarPdf_res = async (req: Request, res: Response) => {
     const datos = await pdf_res_model.findOne({ llave: llave });
     if (datos) {
       res.contentType("application/pdf");
-      let base64 = "";
-      if (datos?.archivo) base64 = datos?.archivo.toString();
-      var pdf = Buffer.from(base64, "base64");
-      res.send(pdf);
+      fs.readFile(`${datos.archivo}`, function (err, data) {
+        !err
+          ? res.send(data)
+          : res
+              .status(405)
+              .json({ cod_error: "01", msg: "No se encontro el directorio." });
+      });
     } else {
       res.json({ msg: `El pdf solicitado no existe`, cod_error: "01" });
     }

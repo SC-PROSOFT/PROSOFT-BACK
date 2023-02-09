@@ -31,7 +31,7 @@ export const getCorr891F8 = async (req: Request, res: Response) => {
 
     get_all_response(data, res)
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.json({ msg: error });
   }
 };
@@ -44,7 +44,7 @@ export const getCorrId = async (req: Request, res: Response) => {
       anoLlave: Number(dato?.toString().slice(0,4)),
       cont: Number(dato?.toString().slice(4,dato?.toString().length)),
     };
-    console.log(dato?.toString().slice(0,4))
+    //console.log(dato?.toString().slice(0,4))
     const data = await corres_model
     .aggregate()
     .project({

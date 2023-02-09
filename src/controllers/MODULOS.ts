@@ -49,7 +49,7 @@ export const agregar_modulo = async (req: Request, res: Response) => {
           }
         );
 
-        console.log(data);
+        //console.log(data);
         res.json({ N1: "guardado" });
       }
     });
@@ -158,7 +158,7 @@ export const eliminar_modulo = async (req: Request, res: Response) => {
         }
       );
 
-      console.log(eliminarModuloTrue);
+      //console.log(eliminarModuloTrue);
     }
 
     delete_response("modulo", data, cod, res);

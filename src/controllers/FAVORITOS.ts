@@ -66,7 +66,7 @@
         else res.json(data);
       }
     } catch (error:any) {
-      console.log(error)
+      //console.log(error)
       res.json({msg:error});
     }
   };
@@ -84,7 +84,7 @@
         }
         );
         rutas=data
-        console.log()
+        //console.log()
       if (data == null)
         res.json({ msg: "El usuario no ha agregado ningún favorito" });
       else res.json(rutas[module]);

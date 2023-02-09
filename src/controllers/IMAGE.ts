@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { get_response, edit_response, omitirId } from "../global/global";
 import { image_model } from "../models/IMAGE";
+import { formato } from "../routes/IMAGE";
 import fs from "fs";
 
 export const getImage = async (req: Request, res: Response) => {
@@ -24,15 +25,11 @@ export const getImage = async (req: Request, res: Response) => {
 
 export const postImage = async (req: Request, res: Response) => {
   try {
-    console.log("entrando");
     const filename = req.params.codigo;
     const codigo = req.params.codigo;
-    console.log("Archivo: ", filename, "Codigo: ", codigo);
-    fs.readFile(`.\\image\\${filename}.jpg`, function (err, data) {
+    fs.readFile(`.\\image\\${filename}.${formato}`, function (err, data) {
       if (err) throw err;
-      console.log("SOY UNA PERRA");
       const img = data.toString("base64"); //PDF WORKS
-
       new image_model({ codigo: codigo, imagen: img }).save((err: any) => {
         if (err) {
           if (err.code)
@@ -41,7 +38,7 @@ export const postImage = async (req: Request, res: Response) => {
         } else res.json({ N1: "guardado" });
       });
 
-      fs.unlink(`.\\image\\${filename}.jpg`, (err) => {
+      fs.unlink(`.\\image\\${filename}.${formato}`, (err) => {
         if (err) throw err;
       });
     });

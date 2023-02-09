@@ -134,7 +134,7 @@ export const getRescorrF8 = async (req: Request, res: Response) => {
 
     get_all_response(data, res);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.json({ msg: error });
   }
 };
@@ -236,7 +236,7 @@ export const getRescorr = async (req: Request, res: Response) => {
 
     get_response("rescor", data[0], anoLlave, res);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.json({ msg: error });
   }
 };

@@ -16,7 +16,7 @@ export const getRescorr = async (req: Request, res: Response) => {
     const data = await rescorr_model.find({}, omitirId);
     get_all_response(data, res);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.json({ msg: error });
   }
 };
@@ -28,7 +28,7 @@ export const postRescorr = async (req: Request, res: Response) => {
       else res.json({ N1: "guardado" });
     });
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.json({ msg: error });
   }
 };
@@ -45,7 +45,7 @@ export const putRescorr = async (req: Request, res: Response) => {
       res
     );
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.json({ msg: error });
   }
 };
@@ -64,7 +64,7 @@ export const deleteRescorr = async (req: Request, res: Response) => {
       res
     );
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.json({ msg: error });
   }
 };
@@ -160,7 +160,7 @@ export const f8Rescorr = async (req: Request, res: Response) => {
       .limit(Number(cantidad));
     get_all_response(data, res);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.json({ msg: error });
   }
 };
@@ -208,7 +208,7 @@ export const getRescorrLlave = async (req: Request, res: Response) => {
       anoLlave: Number(anoLlave),
       cont: Number(cont),
     };
-    console.log(codResp);
+    //console.log(codResp);
     const data = await rescorr_model
       .aggregate([
         {
@@ -380,7 +380,7 @@ export const getRescorrLlave = async (req: Request, res: Response) => {
         // deptoremi:,
       })
       .match({ codResp: codResp });
-      console.log(data[0])
+      //console.log(data[0])
 
     get_response("rescorr", data[0], codResp, res);
   } catch (error) {

@@ -5,16 +5,17 @@ import { cambio_contra_automatico, copia_segurdad, limipar_backup } from "./src/
 import { asignar_modulos_operadores } from "./src/controllers/ASIGNAMODULOS";
 
 require("dotenv").config();
-mongoose.set("strictQuery", true); //Esto oculta una alerta de mongo en consola, quitar si es necesario.
+mongoose.set('strictQuery', true);//Esto oculta una alerta de mongo en consola, quitar si es necesario.
 const PORT = process.env.PORT || 3000;
 const app = express();
 
 //Metodos automaticos
 cambio_contra_automatico();
 asignar_modulos_operadores();
-copia_segurdad();
+copia_segurdad()
 limipar_backup();
 //Estos lo llamamos siempre que se inicie el servidor, dado el caso que el servidor se encuentre apagado a las 12:01 AM
+
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -68,6 +69,7 @@ app.use("/api", routes.MODULOS);
 app.use("/api", routes.MODULOS);
 app.use("/api", routes.DNHABIL);
 app.use("/api", routes.ASIGNAMODULOS);
+app.use("/api", routes.IMAGE);
 
 //********Routes*******
 

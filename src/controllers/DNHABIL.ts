@@ -29,7 +29,7 @@ export const agregarDia = async (req: Request, res: Response) => {
 export const buscarDias = async (req: Request, res: Response) => {
   try {
     const data = await dia_no_habil_model.find({}, {});
-    console.log(data);
+    //console.log(data);
     get_all_response(data, res);
   } catch (error) {
     res.json({ msg: error });
@@ -74,7 +74,7 @@ export const f8Dia = async (req: Request, res: Response) => {
     const { desde, cantidad } = req.params;
     const { dato } = req.query;
 
-    console.log(dato);
+    //console.log(dato);
 
     // if (isNaN(Date.parse(dato))) {
     //   body = { descripcion: { $regex: dato, $options: "i" } };

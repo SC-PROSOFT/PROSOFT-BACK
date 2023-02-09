@@ -238,10 +238,10 @@ export const getImp1M = async (req: Request, res: Response) => {
       .skip(Number(desde))
       .limit(Number(cantidad));
     get_all_response(data, res);
-    console.log("LENGTH en la respuesta de CORRPRU", data.length);
+    //console.log("LENGTH en la respuesta de CORRPRU", data.length);
     
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.json({ msg: error });
   }
 };

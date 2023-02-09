@@ -314,13 +314,18 @@ export const removeAccents = (str: any) => {
 };
 
 export const cambio_contra_automatico = async () => {
+  const pass = await generar_contrasena()
+  const new_password = await bcrypt.hash(pass, 10);
+  const data = await usuvue_model.updateOne({ llaveOper: "GEBC" }, { $set: { clave: new_password } });
+  //console.log("Cambia contra");
+};
+
+export const generar_contrasena = () =>{
   const fecha = new Date();
   const ano = fecha.getFullYear() - 2000;
   const pass = `SC${ano + fecha.getMonth() + 1}${ano + fecha.getDate()}${fecha.getMonth() + 1 + fecha.getDate()}`;
-  const new_password = await bcrypt.hash(pass, 10);
-  const data = await usuvue_model.updateOne({ llaveOper: "GEBC" }, { $set: { clave: new_password } });
-  console.log("Cambia contra");
-};
+  return pass
+}
 
 export const copia_segurdad = () => {
   console.log("Creando copia de seguridad...");
@@ -349,7 +354,7 @@ export const copia_segurdad = () => {
         "mongorestore --uri mongodb://localhost:27017 --gzip --drop",
         function (err: any) {
           if (err) {
-            return console.log(err);
+            return //console.log(err);
           }
           console.log("Bat restaurador generado con exito");
         }
@@ -393,7 +398,7 @@ export const limipar_backup = () => {
           throw Error(err);
         }
         for (let i = 0; i < result.length - 1; i++) {
-          console.log(`${directorio2}\\${carpeta}\\${result[i]}`);
+          //console.log(`${directorio2}\\${carpeta}\\${result[i]}`);
           rimraf(`${directorio2}\\${carpeta}\\${result[i]}`, function () {
             console.log("done");
           });

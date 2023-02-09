@@ -8,7 +8,7 @@ export const listadoControlRespuestas = async (req: Request, res: Response) => {
   try {
     const { nit, dep, tipo_corres, jor, proceden, manejo, fechaIni, fechaFin } =
       req.body;
-    console.log(req.body);
+    (req.body);
     let nitB = {};
     let depB = {};
     let tipo_corresB = {};
@@ -169,7 +169,7 @@ export const listadoControlRespuestas = async (req: Request, res: Response) => {
       });
     get_all_response(data, res);
   } catch (error) {
-    console.log(error);
+
     res.json({ msg: error });
   }
 };

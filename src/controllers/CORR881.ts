@@ -60,7 +60,7 @@ export const getCorr881F8 = async (req: Request, res: Response) => {
 
     get_all_response(data, res);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.json({ msg: error });
   }
 };
