@@ -17,9 +17,9 @@ let storage = multer.diskStorage({
     }
   },
   filename: (req: any, file: any, cb: any) => {
+    
     try {
       const ruta = `D:\\pdf\\${req.params.anoLlave}${req.params.cont}-RES.pdf`
-      console.log(ruta)
       fs.readFile(ruta, function (err, data) {
         if(!data){
           const filename = `${req.params.anoLlave}${req.params.cont}-RES`;
@@ -33,6 +33,7 @@ let storage = multer.diskStorage({
     }
   },
 });
+console.log(storage)
 const upload = multer({ storage });
 
 

@@ -445,61 +445,66 @@ export const ultCorres = async (req: Request, res: Response) => {
 
 export const guardarPdf = async (req: Request, res: Response) => {
   try {
-    console.log("llegue");
-    const filename = `${req.params.anoLlave}${req.params.cont}`;
+    if (req.file) {
+      const filename = `${req.params.anoLlave}${req.params.cont}`;
+      const llave = {
+        anoLlave: parseInt(req.params.anoLlave),
+        cont: parseInt(req.params.cont),
+      };
 
-    const llave = {
-      anoLlave: parseInt(req.params.anoLlave),
-      cont: parseInt(req.params.cont),
-    };
+      const ruta = `D:\\pdf\\${filename}.pdf`;
+      fs.readFile(ruta, function (err, data) {
+        if (err) throw err;
 
-    const ruta = `D:\\pdf\\${filename}.pdf`;
-    fs.readFile(ruta, function (err, data) {
-      if (err) throw err;
-
-      new pdf_model({ llave: llave, archivo: ruta }).save((err: any) => {
-        if (err) {
-          if (err.code)
-            res.json({ msg: `Ya existe la correspondencia`, cod_error: "00" });
-          else res.json(err);
-        } else res.json({ N1: "guardado" });
+        new pdf_model({ llave: llave, archivo: ruta }).save((err: any) => {
+          if (err) {
+            if (err.code)
+              res.json({
+                msg: `Ya existe la correspondencia`,
+                cod_error: "00",
+              });
+            else res.json(err);
+          } else res.json({ N1: "guardado" });
+        });
       });
-
-      // fs.unlink(ruta, (err) => {
-      //   if (err) throw err;
-      // });
-    });
+    } else {
+      res.json({ msg: "Envie el pdf estupido" });
+    }
   } catch (error) {
-    console.log("F");
     res.json({ msg: error });
   }
 };
 
 export const guardarPdf_res = async (req: Request, res: Response) => {
   try {
-    const filename = `${req.params.anoLlave}${req.params.cont}-RES`;
-    const llave = {
-      anoLlave: parseInt(req.params.anoLlave),
-      cont: parseInt(req.params.cont),
-    };
-    const ruta = `D:\\pdf\\${filename}.pdf`;
-    fs.readFile(`D:\\pdf\\${filename}.pdf`, function (err, data) {
-      if (err) throw err;
-      const pdf = data.toString("base64"); //PDF WORKS
+    if (req.file) {
+      const filename = `${req.params.anoLlave}${req.params.cont}-RES`;
+      const llave = {
+        anoLlave: parseInt(req.params.anoLlave),
+        cont: parseInt(req.params.cont),
+      };
+      const ruta = `D:\\pdf\\${filename}.pdf`;
+      fs.readFile(`D:\\pdf\\${filename}.pdf`, function (err, data) {
+        if (err) throw err;
+        const pdf = data.toString("base64"); //PDF WORKS
 
-      new pdf_res_model({ llave: llave, archivo: ruta }).save((err: any) => {
-        if (err) {
-          if (err.code)
-            res.json({ msg: `Ya existe la correspondencia`, cod_error: "00" });
-          else res.json(err);
-        } else res.json({ N1: "guardado" });
+        new pdf_res_model({ llave: llave, archivo: ruta }).save((err: any) => {
+          if (err) {
+            if (err.code)
+              res.json({
+                msg: `Ya existe la correspondencia`,
+                cod_error: "00",
+              });
+            else res.json(err);
+          } else res.json({ N1: "guardado" });
+        });
       });
-
-      // fs.unlink(`D:\\pdf\\${filename}.pdf`, (err) => {
-      //   if (err) throw err;
-      // });
-    });
-  } catch (error) {}
+    } else {
+      res.json({ msg: "Envie el pdf estupido" });
+    }
+  } catch (error) {
+    res.json({ msg: error });
+  }
 };
 
 export const buscarPdf = async (req: Request, res: Response) => {
