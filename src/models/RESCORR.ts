@@ -7,15 +7,9 @@ interface rescorr {
     direct: string;
     subdirect: string;
     codResp: {    
-      anoLlave: {
-        type: Number,
-        default: 0
-      },
-      cont: {
-        type: Number,
-        default: 0
-      },
-    },
+      anoLlave: number;
+      cont: number;
+    }
     swRadi: string;
     fecha: Date;
     firma: string;

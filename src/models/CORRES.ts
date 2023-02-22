@@ -36,8 +36,8 @@ interface corres {
   codAux: number;
   tablaOper: [{ operdiri1: string }, { operdiri1: string }, { operdiri1: string }, { operdiri1: string }, { operdiri1: string }];
   llaveResp: {
-    anoRes: number;
-    contResPon: number;
+    anoLlave: number;
+    cont: number;
   };
   errorRips: [
     { nroRips: number },
@@ -267,11 +267,11 @@ const corres_schema = new Schema<corres>({
     },
   ],
   llaveResp: {
-    anoRes: {
+    anoLlave: {
       type: Number,
       default: 0,
     },
-    contResPon: {
+    cont: {
       type: Number,
       default: 0,
     },

@@ -6,7 +6,7 @@ interface auxtip {
   ubicacion: string;
   direct: string;
   subdirect: string;
-  codigo: string;
+  codigo: number;
   codSerco: string;
   descripcion: string;
 }
@@ -25,7 +25,7 @@ const auxtip_schema = new Schema<auxtip>({
     default: "",
   },
   codigo: {
-      type: String,
+      type: Number,
       required: true,
       unique: true,
   },

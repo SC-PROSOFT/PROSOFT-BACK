@@ -87,9 +87,17 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
         {
           $lookup: {
             from: "rescorr",
-            localField: "llave",
+            localField: "llaveResp",
             foreignField: "codResp",
-            as: "rescorr",
+            as: "resco",
+          },
+        },
+        {
+          $lookup: {
+            from: "depco",
+            localField: "dep",
+            foreignField: "codigo",
+            as: "depc",
           },
         },
 
@@ -108,20 +116,6 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
           },
         },
 
-        {
-          $lookup: {
-            from: "depco",
-            let: { codigo: "$dep" },
-            pipeline: [
-              {
-                $match: {
-                  $expr: { $eq: ["$codigo", "$$codigo"] },
-                },
-              },
-            ],
-            as: "depc",
-          },
-        },
       ])
 
       .project({
@@ -230,16 +224,17 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
             default: "SIN DEFINIR",
           },
         },
-        llaveResp: {
+        llaveResp: { $concat: [{$toString:{
           $let: {
             vars: {},
-            in: { $add: [{ $arrayElemAt: ["$rescorr.codResp.anoLlave", 0] }] },
-          },
-        },
+            in: { $add: [{ $arrayElemAt: ["$resco.codResp.anoLlave", 0] }] },
+          },}
+        },]
+      },
         contResp: { $concat: [{$toString:{
           $let: {
             vars: {},
-            in: { $add: [{ $arrayElemAt: ["$rescorr.codResp.cont", 0] }] },
+            in: { $add: [{ $arrayElemAt: ["$resco.codResp.cont", 0] }] },
           },}
         }," -S"]//Tener esto pendiente, se hizo a solicitud del front pero es dudosa la argumentacion referente a que en electron coinciden todos los datos menos este al hacer comparacion de respuestas.
       },
@@ -248,7 +243,7 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
             {
               $let: {
                 vars: {},
-                in: { $add: [{ $arrayElemAt: ["$rescorr.fecha", 0] }] },
+                in: { $add: [{ $arrayElemAt: ["$resco.fecha", 0] }] },
               },
             },
             0,
@@ -271,7 +266,6 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
           },
         },
       })
-
       .match({
         $and: [
           nitt,
@@ -285,18 +279,18 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
           estadoo,
         ],
       });
-    for (let i = 0; i < data.length; i++) {
-      // if(typeof data[i].diasTipc != "object") //console.log(data[i].diasTipc)
-      ////console.log(data[i].fecha);
-      const fechaVenceD = await fechaVence(data[i].fecha, data[i].diasTipc);
-      ////console.log("fecha: ", data[i].fecha, "dias: ", data[i].diasTipc);
-      ////console.log(fechaVenceD, "DDD");
-      if (fechaVenceD != 0) { //Esta validacion no deberia ser necesaria, revisar migracion.
-        const guardarFecha = fechaVenceD.toISOString(); // Por alguna extraña razon, el setDate de la funcion diasHabilesTranscurridos cambia el valor de fechaVence, dejando la fecha acrtual
-        data[i].fechaVence = new Date(guardarFecha); // Con esta variable solucione eso. (Desconozco si exite otra forma o lo estoy haciendo mal)
-      } else {
-        data[i].fechaVence = null;
-      }
+      for (let i = 0; i < data.length; i++) {
+        // if(typeof data[i].diasTipc != "object") //console.log(data[i].diasTipc)
+        ////console.log(data[i].fecha);
+        const fechaVenceD = await fechaVence(data[i].fecha, data[i].diasTipc);
+        ////console.log("fecha: ", data[i].fecha, "dias: ", data[i].diasTipc);
+        ////console.log(fechaVenceD, "DDD");
+        if (fechaVenceD != 0) { //Esta validacion no deberia ser necesaria, revisar migracion.
+          const guardarFecha = fechaVenceD.toISOString(); // Por alguna extraña razon, el setDate de la funcion diasHabilesTranscurridos cambia el valor de fechaVence, dejando la fecha acrtual
+          data[i].fechaVence = new Date(guardarFecha); // Con esta variable solucione eso. (Desconozco si exite otra forma o lo estoy haciendo mal)
+        } else {
+          data[i].fechaVence = null;
+        }
       const of =" de ";
       const max =" máximo ";
       const diasVence = await diasHabilesTranscurridos(fechaVenceD);
@@ -305,9 +299,11 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
       data[i].diasVence = diasVence + of + data[i].diasTipc + max;
     }
     get_all_response(data, res);
+    console.log(data);
     // //console.log("RES en la validacion de COR301", res);
     // //console.log("DATA en la validacion de COR301", data);
   } catch (error) {
+    console.log(error )
     res.json({ msg: error });
   }
 };
