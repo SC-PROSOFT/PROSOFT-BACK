@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { RestTypeNode } from "typescript";
 import {
   concatenarCodigos,
   delete_response,
@@ -41,13 +40,11 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
     if (tipoCorr != "**") tipoCorrr = { tipoCorres: tipoCorr };
     if (jornada != "**") {
       if (jornada == "M")
-        jornadaa =  { 
-          $expr:
-          { $lt: [ {$hour: "$fecha"}, 12 ] }
-        }
+        jornadaa = {
+          $expr: { $lt: [{ $hour: "$fecha" }, 12] },
+        };
       //$lt para que tome valores de 12 hacia atras, si le pongo la e tomaria el 12
-      else jornadaa = { $expr:
-        { $gte: [ {$hour: "$fecha"}, 12 ] } };
+      else jornadaa = { $expr: { $gte: [{ $hour: "$fecha" }, 12] } };
     }
     if (proceden != "**") procedenn = { proceden: Number(proceden) };
     if (manejo != "**") manejoo = { manejo: Number(manejo) };
@@ -115,7 +112,6 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
             as: "tipc",
           },
         },
-
       ])
 
       .project({
@@ -125,14 +121,27 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
         fecha: 1,
         fechaR: { $substr: ["$fecha", 0, 10] },
         hora: {
-          $concat: [padStart({ $toString: { $hour: "$fecha" } }, 2, "0"), ":", padStart({ $toString: { $minute: "$fecha" } }, 2, "0")],
+          $concat: [
+            padStart({ $toString: { $hour: "$fecha" } }, 2, "0"),
+            ":",
+            padStart({ $toString: { $minute: "$fecha" } }, 2, "0"),
+          ],
         },
         esta: 1,
         dep: 1,
         estaR: {
           $switch: {
             branches: [
-              { case: { $eq: ["$esta", 1] }, then: "EN TRAMITE" },
+              {
+                case: { $eq: ["$esta", 1] },
+                then: {
+                  $cond: {
+                    if: { $eq: ["$manejo", 1] },
+                    then: "RESULETA",
+                    else: "EN TRAMITE",
+                  },
+                },
+              },
               { case: { $eq: ["$esta", 2] }, then: "VENCIDA" },
               { case: { $eq: ["$esta", 3] }, then: "RESUELTA" },
               { case: { $eq: ["$esta", 4] }, then: "RESUELTA" }, //Se consulto con encargado de correspondencia daniel, el numero 4 es resuelta tambien, igual que el 6 lo toman como resuelta.
@@ -156,13 +165,7 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
             in: { $add: [{ $arrayElemAt: ["$tipc.dias", 0] }] },
           },
         },
-        fechaVence: {
-          $dateAdd: {
-            startDate: "$fecha",
-            unit: "day",
-            amount: { $arrayElemAt: ["$tipc.dias", 0] },
-          },
-        },
+        fechaVence: 1,
         // diasVence: {
         //   $dateDiff: {
         //     startDate: new Date(),
@@ -176,15 +179,14 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
         //     unit: "day",
         //   },
         // },
-        diasVence:1,
+        diasVence: 1,
         descripAuxco: { $concat: [{ $arrayElemAt: ["$aux.descripcion", 0] }] },
         descripSerco: { $concat: [{ $arrayElemAt: ["$serc.descripcion", 0] }] },
         responsableDep: {
           $concat: [{ $arrayElemAt: ["$depc.responsable", 0] }],
         },
         correoRespDep: { $concat: [{ $arrayElemAt: ["$depc.correo", 0] }] },
-        folios:{$concat:[
-          "$fol"," de ","$fold"]}, 
+        folios: { $concat: ["$fol", " de ", "$fold"] },
         nroFact: 1,
         monto: 1,
         fecheFactR: { $substr: ["$fechaFact", 0, 10] },
@@ -224,20 +226,33 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
             default: "SIN DEFINIR",
           },
         },
-        llaveResp: { $concat: [{$toString:{
-          $let: {
-            vars: {},
-            in: { $add: [{ $arrayElemAt: ["$resco.codResp.anoLlave", 0] }] },
-          },}
-        },]
-      },
-        contResp: { $concat: [{$toString:{
-          $let: {
-            vars: {},
-            in: { $add: [{ $arrayElemAt: ["$resco.codResp.cont", 0] }] },
-          },}
-        }," -S"]//Tener esto pendiente, se hizo a solicitud del front pero es dudosa la argumentacion referente a que en electron coinciden todos los datos menos este al hacer comparacion de respuestas.
-      },
+        llaveResp: {
+          $concat: [
+            {
+              $toString: {
+                $let: {
+                  vars: {},
+                  in: {
+                    $add: [{ $arrayElemAt: ["$resco.codResp.anoLlave", 0] }],
+                  },
+                },
+              },
+            },
+          ],
+        },
+        contResp: {
+          $concat: [
+            {
+              $toString: {
+                $let: {
+                  vars: {},
+                  in: { $add: [{ $arrayElemAt: ["$resco.codResp.cont", 0] }] },
+                },
+              },
+            },
+            " -S",
+          ], //Tener esto pendiente, se hizo a solicitud del front pero es dudosa la argumentacion referente a que en electron coinciden todos los datos menos este al hacer comparacion de respuestas.
+        },
         fechaRespuesta: {
           $substr: [
             {
@@ -279,31 +294,31 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
           estadoo,
         ],
       });
-      for (let i = 0; i < data.length; i++) {
-        // if(typeof data[i].diasTipc != "object") //console.log(data[i].diasTipc)
-        ////console.log(data[i].fecha);
-        const fechaVenceD = await fechaVence(data[i].fecha, data[i].diasTipc);
-        ////console.log("fecha: ", data[i].fecha, "dias: ", data[i].diasTipc);
-        ////console.log(fechaVenceD, "DDD");
-        if (fechaVenceD != 0) { //Esta validacion no deberia ser necesaria, revisar migracion.
-          const guardarFecha = fechaVenceD.toISOString(); // Por alguna extraña razon, el setDate de la funcion diasHabilesTranscurridos cambia el valor de fechaVence, dejando la fecha acrtual
-          data[i].fechaVence = new Date(guardarFecha); // Con esta variable solucione eso. (Desconozco si exite otra forma o lo estoy haciendo mal)
-        } else {
-          data[i].fechaVence = null;
-        }
-      const of =" de ";
-      const max =" máximo ";
+    for (let i = 0; i < data.length; i++) {
+      // if(typeof data[i].diasTipc != "object") //console.log(data[i].diasTipc)
+      ////console.log(data[i].fecha);
+      const fechaVenceD = await fechaVence(data[i].fecha, data[i].diasTipc);
+      ////console.log("fecha: ", data[i].fecha, "dias: ", data[i].diasTipc);
+      ////console.log(fechaVenceD, "DDD");
+      if (fechaVenceD != 0) {
+        //Esta validacion no deberia ser necesaria, revisar migracion.
+        const guardarFecha = fechaVenceD.toISOString(); // Por alguna extraña razon, el setDate de la funcion diasHabilesTranscurridos cambia el valor de fechaVence, dejando la fecha acrtual
+        data[i].fechaVence = new Date(guardarFecha); // Con esta variable solucione eso. (Desconozco si exite otra forma o lo estoy haciendo mal)
+      } else {
+        data[i].fechaVence = null;
+      }
+      const of = " de ";
+      const max = " máximo ";
       const diasVence = await diasHabilesTranscurridos(fechaVenceD);
       // const diasTrans = await diasHabilesTranscurridos(fechaVenceD);
       data[i].diasTrans = diasVence;
       data[i].diasVence = diasVence + of + data[i].diasTipc + max;
     }
     get_all_response(data, res);
-    console.log(data);
     // //console.log("RES en la validacion de COR301", res);
     // //console.log("DATA en la validacion de COR301", data);
   } catch (error) {
-    console.log(error )
+    console.log(error);
     res.json({ msg: error });
   }
 };
