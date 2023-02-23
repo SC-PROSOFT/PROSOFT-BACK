@@ -302,8 +302,8 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
       ////console.log(fechaVenceD, "DDD");
       if (fechaVenceD != 0) {
         //Esta validacion no deberia ser necesaria, revisar migracion.
-        const guardarFecha = fechaVenceD.toISOString(); // Por alguna extraña razon, el setDate de la funcion diasHabilesTranscurridos cambia el valor de fechaVence, dejando la fecha acrtual
-        data[i].fechaVence = new Date(guardarFecha); // Con esta variable solucione eso. (Desconozco si exite otra forma o lo estoy haciendo mal)
+        const guardarFecha = fechaVenceD; // Por alguna extraña razon, el setDate de la funcion diasHabilesTranscurridos cambia el valor de fechaVence, dejando la fecha acrtual
+        data[i].fechaVence = `${guardarFecha.getFullYear()}-${guardarFecha.getMonth() + 1 }-${guardarFecha.getDate()}`; // Con esta variable solucione eso. (Desconozco si exite otra forma o lo estoy haciendo mal)
       } else {
         data[i].fechaVence = null;
       }
