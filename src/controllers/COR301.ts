@@ -1,17 +1,11 @@
 import { Request, Response } from "express";
 import {
-  concatenarCodigos,
-  delete_response,
   diasHabilesTranscurridos,
-  edit_response,
   fechaVence,
   get_all_response,
-  get_response,
-  omitirId,
   padStart,
 } from "../global/global";
 import { corres_model } from "../models/CORRES";
-import { dia_no_habil_model } from "../models/DNHABIL";
 
 export const getImpresionCorr = async (req: Request, res: Response) => {
   try {
@@ -166,19 +160,6 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
           },
         },
         fechaVence: 1,
-        // diasVence: {
-        //   $dateDiff: {
-        //     startDate: new Date(),
-        //     endDate: {
-        //       $dateAdd: {
-        //         startDate: "$fecha",
-        //         unit: "day",
-        //         amount: { $arrayElemAt: ["$tipc.dias", 0] },
-        //       },
-        //     },
-        //     unit: "day",
-        //   },
-        // },
         diasVence: 1,
         descripAuxco: { $concat: [{ $arrayElemAt: ["$aux.descripcion", 0] }] },
         descripSerco: { $concat: [{ $arrayElemAt: ["$serc.descripcion", 0] }] },
@@ -295,15 +276,13 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
         ],
       });
     for (let i = 0; i < data.length; i++) {
-      // if(typeof data[i].diasTipc != "object") //console.log(data[i].diasTipc)
-      ////console.log(data[i].fecha);
       const fechaVenceD = await fechaVence(data[i].fecha, data[i].diasTipc);
-      ////console.log("fecha: ", data[i].fecha, "dias: ", data[i].diasTipc);
-      ////console.log(fechaVenceD, "DDD");
       if (fechaVenceD != 0) {
         //Esta validacion no deberia ser necesaria, revisar migracion.
         const guardarFecha = fechaVenceD; // Por alguna extraña razon, el setDate de la funcion diasHabilesTranscurridos cambia el valor de fechaVence, dejando la fecha acrtual
-        data[i].fechaVence = `${guardarFecha.getFullYear()}-${guardarFecha.getMonth() + 1 }-${guardarFecha.getDate()}`; // Con esta variable solucione eso. (Desconozco si exite otra forma o lo estoy haciendo mal)
+        data[i].fechaVence = `${guardarFecha.getFullYear()}-${
+          guardarFecha.getMonth() + 1
+        }-${guardarFecha.getDate()}`; // Con esta variable solucione eso. (Desconozco si exite otra forma o lo estoy haciendo mal)
       } else {
         data[i].fechaVence = null;
       }
@@ -315,8 +294,6 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
       data[i].diasVence = diasVence + of + data[i].diasTipc + max;
     }
     get_all_response(data, res);
-    // //console.log("RES en la validacion de COR301", res);
-    // //console.log("DATA en la validacion de COR301", data);
   } catch (error) {
     console.log(error);
     res.json({ msg: error });
