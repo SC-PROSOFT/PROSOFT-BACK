@@ -1,13 +1,11 @@
 import { Request, Response } from "express";
 import nodemailer from "nodemailer";
 import {
-  concatenarCodigos,
   delete_response,
   padStart,
   edit_response,
   get_all_response,
   get_response,
-  omitirId,
 } from "../global/global";
 import fs from "fs";
 import { corres_model } from "../models/CORRES";
@@ -528,6 +526,7 @@ export const buscarPdf = async (req: Request, res: Response) => {
     }
   } catch (error) {}
 };
+
 export const buscarPdf_res = async (req: Request, res: Response) => {
   try {
     const llave = {
