@@ -11,23 +11,22 @@ import { modulos_schema } from "../models/MODULOS";
 
 export const agregar_modulo = async (req: Request, res: Response) => {
   try {
-    let body:any
-    if(req.body.cod === "NOM"){
-      body = {
-        cod:req.body.cod,
-        descripcion:req.body.descripcion,
-        estado: false,
-        modulos:[{nomina:"ADM"},
-        {nomina:"CTL"}]
-      }
-    }else{
+    let body: any;
+    if (req.body.cod === "NOM") {
       body = {
         cod: req.body.cod,
         descripcion: req.body.descripcion,
         estado: false,
-      }
+        modulos: [{ nomina: "ADM" }, { nomina: "CTL" }],
+      };
+    } else {
+      body = {
+        cod: req.body.cod,
+        descripcion: req.body.descripcion,
+        estado: false,
+      };
     }
-    
+
     new modulos_schema(body).save(async (err) => {
       if (err) res.send({ msg: err });
       else {
@@ -48,8 +47,6 @@ export const agregar_modulo = async (req: Request, res: Response) => {
             },
           }
         );
-
-        //console.log(data);
         res.json({ N1: "guardado" });
       }
     });
@@ -62,7 +59,7 @@ export const editar_modulo = async (req: Request, res: Response) => {
   try {
     const { cod } = req.body;
 
-    const modulo = await modulos_schema.findOne({cod:cod})
+    const modulo = await modulos_schema.findOne({ cod: cod });
     const data = await modulos_schema.updateOne(
       { cod: cod },
       {
@@ -73,23 +70,28 @@ export const editar_modulo = async (req: Request, res: Response) => {
       }
     );
 
-    if(! data.acknowledged === false){
-
-      const editarModul  = await modul_model.updateMany({
-        "modulos.cod":cod
-      },{
-        $set:{
-          "modulos.$.descripcion": req.body.descripcion
+    if (!data.acknowledged === false) {
+      const editarModul = await modul_model.updateMany(
+        {
+          "modulos.cod": cod,
+        },
+        {
+          $set: {
+            "modulos.$.descripcion": req.body.descripcion,
+          },
         }
-      })
+      );
 
-      const editarAsignaModul  = await asigna_modulos_model.updateMany({
-        "modulos.cod":cod
-      },{
-        $set:{
-          "modulos.$.descripcion": req.body.descripcion
+      const editarAsignaModul = await asigna_modulos_model.updateMany(
+        {
+          "modulos.cod": cod,
+        },
+        {
+          $set: {
+            "modulos.$.descripcion": req.body.descripcion,
+          },
         }
-      })
+      );
     }
 
     edit_response("modulo", data, cod, res);
@@ -157,8 +159,6 @@ export const eliminar_modulo = async (req: Request, res: Response) => {
           },
         }
       );
-
-      //console.log(eliminarModuloTrue);
     }
 
     delete_response("modulo", data, cod, res);

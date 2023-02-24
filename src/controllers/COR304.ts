@@ -8,7 +8,7 @@ export const listadoControlRespuestas = async (req: Request, res: Response) => {
   try {
     const { nit, dep, tipo_corres, jor, proceden, manejo, fechaIni, fechaFin } =
       req.body;
-    (req.body);
+    req.body;
     let nitB = {};
     let depB = {};
     let tipo_corresB = {};
@@ -91,12 +91,23 @@ export const listadoControlRespuestas = async (req: Request, res: Response) => {
       ])
       .project({
         _id: 0,
-        codResp:1,
-        codRespR: {$concat: [{$toString:"$codResp.anoLlave"},{$toString:"$codResp.cont"}]},
-        contResPon: { $concat: [{ $toString: ["$codResp.cont"] }," -S"]},
+        codResp: 1,
+        codRespR: {
+          $concat: [
+            { $toString: "$codResp.anoLlave" },
+            { $toString: "$codResp.cont" },
+          ],
+        },
+        contResPon: { $concat: [{ $toString: ["$codResp.cont"] }, " -S"] },
         fecha: 1,
-        fechaR: {$substr: ["$fecha",0,10]},
-        horaFecha: { $concat: [{ $toString: {$hour: "$fecha"}}, ":", { $toString: {$minute:"$fecha"}}]},
+        fechaR: { $substr: ["$fecha", 0, 10] },
+        horaFecha: {
+          $concat: [
+            { $toString: { $hour: "$fecha" } },
+            ":",
+            { $toString: { $minute: "$fecha" } },
+          ],
+        },
         descrip: 1,
         nit: 1,
         dep: 1,
@@ -134,26 +145,26 @@ export const listadoControlRespuestas = async (req: Request, res: Response) => {
             in: { $add: [{ $arrayElemAt: ["$corres.fechaFact", 0] }] },
           },
         },
-        proceden:1,
+        proceden: 1,
         procedenR: {
-          $switch:{
-            branches:[
-              {case:{$eq:["$proceden",1]}, then:"EXTERNO"},
-              {case:{$eq:["$proceden",2]}, then:"INTERNO"}
+          $switch: {
+            branches: [
+              { case: { $eq: ["$proceden", 1] }, then: "EXTERNO" },
+              { case: { $eq: ["$proceden", 2] }, then: "INTERNO" },
             ],
-            default:"SIN DEFINIR"
-        },
+            default: "SIN DEFINIR",
+          },
         },
         hour: { $hour: "$fecha" },
-        manejo: { 
-          $cond:
-              {
-                if: {
-                $eq:["$manejo",1]},
-                then:"INFORMATIVO",
-                else:"RESOLUTIVO",
-                }
+        manejo: {
+          $cond: {
+            if: {
+              $eq: ["$manejo", 1],
             },
+            then: "INFORMATIVO",
+            else: "RESOLUTIVO",
+          },
+        },
       })
       .match({
         $and: [
@@ -169,7 +180,6 @@ export const listadoControlRespuestas = async (req: Request, res: Response) => {
       });
     get_all_response(data, res);
   } catch (error) {
-
     res.json({ msg: error });
   }
 };

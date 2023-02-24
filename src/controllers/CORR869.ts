@@ -21,7 +21,10 @@ export const getCorr869F8 = async (req: Request, res: Response) => {
       .project({
         _id: 0,
         llave: {
-          $concat: [{ $toString: ["$llave.anoLlave"] }, { $toString: ["$llave.cont"] }],
+          $concat: [
+            { $toString: ["$llave.anoLlave"] },
+            { $toString: ["$llave.cont"] },
+          ],
         },
         fecha: 1,
         hora: { $hour: "$fecha" },
@@ -53,14 +56,13 @@ export const getCorr869F8 = async (req: Request, res: Response) => {
 
     get_all_response(data, res);
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     res.json({ msg: error });
   }
 };
 export const getCorr869 = async (req: Request, res: Response) => {
   try {
     const { anio } = req.params;
-    //console.log(req.params)
     const data = await corres_model
       .aggregate([
         {
@@ -76,28 +78,37 @@ export const getCorr869 = async (req: Request, res: Response) => {
       .project({
         _id: 0,
         llave: {
-          $concat: [{ $toString: ["$llave.anoLlave"] }, { $toString: ["$llave.cont"] }],
+          $concat: [
+            { $toString: ["$llave.anoLlave"] },
+            { $toString: ["$llave.cont"] },
+          ],
         },
-        ano: {$concat: [{$toString:["$llave.anoLlave"]}]},
+        ano: { $concat: [{ $toString: ["$llave.anoLlave"] }] },
         // fecha: 1,
-        fechaR:{$substr:["$fecha",0,10]},
-        hora: {$concat:[{ $toString:{$hour: "$fecha"} },":",{$toString:{$minute: "$fecha"} }]},
+        fechaR: { $substr: ["$fecha", 0, 10] },
+        hora: {
+          $concat: [
+            { $toString: { $hour: "$fecha" } },
+            ":",
+            { $toString: { $minute: "$fecha" } },
+          ],
+        },
         ser: 1,
         descripSerco: { $concat: [{ $arrayElemAt: ["$serc.descripcion", 0] }] },
-        esta:1,
-        estaR:{
-        $switch: {
-          branches: [
-            { case: { $eq: ["$esta", 1] }, then: "EN TRAMITE" },
-            { case: { $eq: ["$esta", 2] }, then: "VENCIDA" },
-            { case: { $eq: ["$esta", 3] }, then: "RESUELTA" },
-            { case: { $eq: ["$esta", 4] }, then: "RESUELTA" }, //Se consulto con encargado de correspondencia daniel, el numero 4 es resuelta tambien, igual que el 6 lo toman como resuelta.
-            { case: { $eq: ["$esta", 5] }, then: "PRORROGA" },
-            { case: { $eq: ["$esta", 6] }, then: "ANULADO" },
-          ],
-          default: "SIN DEFINIR",
+        esta: 1,
+        estaR: {
+          $switch: {
+            branches: [
+              { case: { $eq: ["$esta", 1] }, then: "EN TRAMITE" },
+              { case: { $eq: ["$esta", 2] }, then: "VENCIDA" },
+              { case: { $eq: ["$esta", 3] }, then: "RESUELTA" },
+              { case: { $eq: ["$esta", 4] }, then: "RESUELTA" }, //Se consulto con encargado de correspondencia daniel, el numero 4 es resuelta tambien, igual que el 6 lo toman como resuelta.
+              { case: { $eq: ["$esta", 5] }, then: "PRORROGA" },
+              { case: { $eq: ["$esta", 6] }, then: "ANULADO" },
+            ],
+            default: "SIN DEFINIR",
+          },
         },
-      },
         descripEsta: {
           $switch: {
             branches: [
@@ -110,11 +121,11 @@ export const getCorr869 = async (req: Request, res: Response) => {
           },
         },
       })
-      .match({ ano : anio });
+      .match({ ano: anio });
 
     get_all_response(data, res);
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     res.json({ msg: error });
   }
 };

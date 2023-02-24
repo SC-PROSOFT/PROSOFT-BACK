@@ -12,7 +12,7 @@ import { corrpru_model } from "../models/CORRPRU";
 // Pruebita
 export const getImp1M = async (req: Request, res: Response) => {
   try {
-    const { desde, cantidad } = req.params
+    const { desde, cantidad } = req.params;
     const {
       nit,
       dep,
@@ -22,7 +22,7 @@ export const getImp1M = async (req: Request, res: Response) => {
       jornada,
       proceden,
       manejo,
-      estado
+      estado,
     } = req.body;
 
     let nitt = {};
@@ -32,7 +32,7 @@ export const getImp1M = async (req: Request, res: Response) => {
     let procedenn = {};
     let manejoo = {};
     let estadoo = {};
-    
+
     if (nit != "99") nitt = { nit: Number(nit) };
     if (dep != "**") depp = { dep: dep };
     if (tipoCorr != "**") tipoCorrr = { tipoCorres: tipoCorr };
@@ -40,12 +40,15 @@ export const getImp1M = async (req: Request, res: Response) => {
       if (jornada == "M")
         jornadaa = {
           hour: { $lt: 12 },
-        }; //$lt para que tome valores de 12 hacia atras, si le pongo la e tomaria el 12
+        };
+      //$lt para que tome valores de 12 hacia atras, si le pongo la e tomaria el 12
       else jornadaa = { hour: { $gte: 12 } };
     }
     if (proceden != "**") procedenn = { proceden: Number(proceden) };
     if (manejo != "**") manejoo = { manejo: Number(manejo) };
-    if (estado != "**" && estado != null ) {estadoo = { estado: Number(estado)} };
+    if (estado != "**" && estado != null) {
+      estadoo = { estado: Number(estado) };
+    }
 
     const data = await corrpru_model
       .aggregate([
@@ -122,18 +125,18 @@ export const getImp1M = async (req: Request, res: Response) => {
         anoLlave: { $concat: [{ $toString: ["$llave.anoLlave"] }] },
         fecha: 1,
         esta: 1,
-        estaR:{
-          $switch:{
-            branches:[
-              {case: {$eq: ["$esta", 1]}, then: "EN TRAMITE"},
-              {case: {$eq: ["$esta", 2]}, then: "VENCIDA"},
-              {case: {$eq: ["$esta", 3]}, then: "RESUELTA"},
-              {case: {$eq: ["$esta", 4]}, then: "RESUELTA"},//Se consulto con encargado de correspondencia daniel, el numero 4 es resuelta tambien, igual que el 6 lo toman como resuelta.
-              {case: {$eq: ["$esta", 5]}, then: "PRORROGA"},
-              {case: {$eq: ["$esta", 6]}, then: "ANULADO"}
+        estaR: {
+          $switch: {
+            branches: [
+              { case: { $eq: ["$esta", 1] }, then: "EN TRAMITE" },
+              { case: { $eq: ["$esta", 2] }, then: "VENCIDA" },
+              { case: { $eq: ["$esta", 3] }, then: "RESUELTA" },
+              { case: { $eq: ["$esta", 4] }, then: "RESUELTA" }, //Se consulto con encargado de correspondencia daniel, el numero 4 es resuelta tambien, igual que el 6 lo toman como resuelta.
+              { case: { $eq: ["$esta", 5] }, then: "PRORROGA" },
+              { case: { $eq: ["$esta", 6] }, then: "ANULADO" },
             ],
-            default:"SIN DEFINIR"
-          }
+            default: "SIN DEFINIR",
+          },
         },
         hour: { $hour: "$fecha" },
         minute: { $minute: "$fecha" },
@@ -232,16 +235,14 @@ export const getImp1M = async (req: Request, res: Response) => {
           jornadaa,
           procedenn,
           manejoo,
-          estadoo
+          estadoo,
         ],
       })
       .skip(Number(desde))
       .limit(Number(cantidad));
     get_all_response(data, res);
-    //console.log("LENGTH en la respuesta de CORRPRU", data.length);
-    
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     res.json({ msg: error });
   }
 };

@@ -12,7 +12,7 @@ import { tipco_model } from "../models/TIPCO";
 export const getTipco = async (req: Request, res: Response) => {
   try {
     const data = await tipco_model.find({}, omitirId);
-    get_all_response(data, res)
+    get_all_response(data, res);
   } catch (error) {
     res.json({ msg: error });
   }
@@ -31,10 +31,12 @@ export const postTipco = async (req: Request, res: Response) => {
 
 export const putTipco = async (req: Request, res: Response) => {
   try {
-    const {codigo} = req.params
+    const { codigo } = req.params;
     const body = req.body;
-    delete body.codigo
-    const data = await tipco_model.updateOne({codigo: codigo}, body, { runValidators: true });
+    delete body.codigo;
+    const data = await tipco_model.updateOne({ codigo: codigo }, body, {
+      runValidators: true,
+    });
     edit_response("tipco", data, codigo, res);
   } catch (error) {
     res.json({ msg: error });
@@ -53,8 +55,8 @@ export const deleteTipco = async (req: Request, res: Response) => {
 
 export const getTipcoId = async (req: Request, res: Response) => {
   try {
-    const { codigo } = req.params
-    const data = await tipco_model.findOne({codigo: codigo}, omitirId);
+    const { codigo } = req.params;
+    const data = await tipco_model.findOne({ codigo: codigo }, omitirId);
     get_response("tipco", data, codigo, res);
   } catch (error) {
     res.json({ msg: error });
@@ -66,10 +68,15 @@ export const f8Tipco = async (req: Request, res: Response) => {
     const { desde, cantidad } = req.params;
     let { dato } = req.query;
     const data = await tipco_model
-      .find({ $or: [
-        { codigo: { $regex: dato, $options: "ix" } },
-        { descripcion: { $regex: dato, $options: "i" } },
-      ] }, omitirId)
+      .find(
+        {
+          $or: [
+            { codigo: { $regex: dato, $options: "ix" } },
+            { descripcion: { $regex: dato, $options: "i" } },
+          ],
+        },
+        omitirId
+      )
       .skip(Number(desde))
       .limit(Number(cantidad));
     get_all_response(data, res);

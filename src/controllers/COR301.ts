@@ -37,7 +37,6 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
         jornadaa = {
           $expr: { $lt: [{ $hour: "$fecha" }, 12] },
         };
-      //$lt para que tome valores de 12 hacia atras, si le pongo la e tomaria el 12
       else jornadaa = { $expr: { $gte: [{ $hour: "$fecha" }, 12] } };
     }
     if (proceden != "**") procedenn = { proceden: Number(proceden) };
@@ -138,7 +137,7 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
               },
               { case: { $eq: ["$esta", 2] }, then: "VENCIDA" },
               { case: { $eq: ["$esta", 3] }, then: "RESUELTA" },
-              { case: { $eq: ["$esta", 4] }, then: "RESUELTA" }, //Se consulto con encargado de correspondencia daniel, el numero 4 es resuelta tambien, igual que el 6 lo toman como resuelta.
+              { case: { $eq: ["$esta", 4] }, then: "RESUELTA" },
               { case: { $eq: ["$esta", 5] }, then: "PRORROGA" },
               { case: { $eq: ["$esta", 6] }, then: "ANULADO" },
             ],
@@ -232,7 +231,7 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
               },
             },
             " -S",
-          ], //Tener esto pendiente, se hizo a solicitud del front pero es dudosa la argumentacion referente a que en electron coinciden todos los datos menos este al hacer comparacion de respuestas.
+          ],
         },
         fechaRespuesta: {
           $substr: [
@@ -254,7 +253,7 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
               { case: { $eq: ["$medioIng", 1] }, then: "CORREO CERTIFICADO" },
               { case: { $eq: ["$medioIng", 2] }, then: "E-MAIL" },
               { case: { $eq: ["$medioIng", 3] }, then: "PERSONAL" },
-              { case: { $eq: ["$medioIng", 4] }, then: "PERSONAL ESCRITA" }, //Se consulto con encargado de correspondencia daniel, el numero 4 es resuelta tambien, igual que el 6 lo toman como resuelta.
+              { case: { $eq: ["$medioIng", 4] }, then: "PERSONAL ESCRITA" },
               { case: { $eq: ["$medioIng", 5] }, then: "PERSONAL VERBAL" },
               { case: { $eq: ["$medioIng", 6] }, then: "PÁGINA WEB" },
             ],
