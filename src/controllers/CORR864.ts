@@ -134,7 +134,7 @@ export const getRescorrF8 = async (req: Request, res: Response) => {
 
     get_all_response(data, res);
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     res.json({ msg: error });
   }
 };
@@ -186,7 +186,13 @@ export const getRescorr = async (req: Request, res: Response) => {
         contLlave: { $concat: [{ $toString: ["$codResp.cont"] }] },
         swRadi: 1,
         fecha: 1,
-        hora: {$concat:[{$toString:{ $hour: "$fecha" }},":",{$toString:{ $minute: "$fecha" }}]},
+        hora: {
+          $concat: [
+            { $toString: { $hour: "$fecha" } },
+            ":",
+            { $toString: { $minute: "$fecha" } },
+          ],
+        },
         firma: 1,
         codigoMacro: 1,
         asunto: 1,
@@ -236,7 +242,7 @@ export const getRescorr = async (req: Request, res: Response) => {
 
     get_response("rescor", data[0], anoLlave, res);
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     res.json({ msg: error });
   }
 };

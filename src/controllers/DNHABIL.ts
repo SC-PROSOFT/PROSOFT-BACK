@@ -1,7 +1,14 @@
 import { dia_no_habil_model } from "../models/DNHABIL";
 
 import { Response, Request } from "express";
-import { delete_response, diacriticSensitiveRegex, edit_response, get_all_response, get_response, removeAccents } from "../global/global";
+import {
+  delete_response,
+  diacriticSensitiveRegex,
+  edit_response,
+  get_all_response,
+  get_response,
+  removeAccents,
+} from "../global/global";
 
 export const eliminarDia = async (req: Request, res: Response) => {
   try {
@@ -29,7 +36,6 @@ export const agregarDia = async (req: Request, res: Response) => {
 export const buscarDias = async (req: Request, res: Response) => {
   try {
     const data = await dia_no_habil_model.find({}, {});
-    //console.log(data);
     get_all_response(data, res);
   } catch (error) {
     res.json({ msg: error });
@@ -93,7 +99,10 @@ export const f8Dia = async (req: Request, res: Response) => {
         },
       ])
       .match({
-        $or: [{ descripcion: { $regex: dato, $options: "i" } }, { date: { $regex: dato, $options: "i" } }],
+        $or: [
+          { descripcion: { $regex: dato, $options: "i" } },
+          { date: { $regex: dato, $options: "i" } },
+        ],
       })
       .skip(Number(desde))
       .limit(Number(cantidad));

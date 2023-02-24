@@ -5,33 +5,31 @@ import { corres_model } from "../models/CORRES";
 
 export const getCorr891F8 = async (req: Request, res: Response) => {
   try {
-    const {desde,cantidad} = req.params;
-    const {dato} = req.query;
+    const { desde, cantidad } = req.params;
+    const { dato } = req.query;
     const data = await corres_model
-    .aggregate([])
-    .project({
-        _id:0,
-        llave:{
-            $concat: [
-              { $toString: ["$llave.anoLlave"] },
-              { $toString: ["$llave.cont"] },
-            ],
-          },
-        anoLlave:{ $toString: ["$llave.anoLlave"] },
-        contLlave:{ $toString: ["$llave.cont"] },
+      .aggregate([])
+      .project({
+        _id: 0,
+        llave: {
+          $concat: [
+            { $toString: ["$llave.anoLlave"] },
+            { $toString: ["$llave.cont"] },
+          ],
+        },
+        anoLlave: { $toString: ["$llave.anoLlave"] },
+        contLlave: { $toString: ["$llave.cont"] },
         // cartera:,
-    })
-    .match({
-        $or: [
-          { llave: { $regex: dato, $options: "i" } },
-        ]
-    })
-    .skip(Number(desde))
-    .limit(Number(cantidad));
+      })
+      .match({
+        $or: [{ llave: { $regex: dato, $options: "i" } }],
+      })
+      .skip(Number(desde))
+      .limit(Number(cantidad));
 
-    get_all_response(data, res)
+    get_all_response(data, res);
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     res.json({ msg: error });
   }
 };
@@ -41,14 +39,13 @@ export const getCorrId = async (req: Request, res: Response) => {
     const { dato } = req.query;
 
     const llave = {
-      anoLlave: Number(dato?.toString().slice(0,4)),
-      cont: Number(dato?.toString().slice(4,dato?.toString().length)),
+      anoLlave: Number(dato?.toString().slice(0, 4)),
+      cont: Number(dato?.toString().slice(4, dato?.toString().length)),
     };
-    //console.log(dato?.toString().slice(0,4))
     const data = await corres_model
-    .aggregate()
-    .project({
-      _id: 0,
+      .aggregate()
+      .project({
+        _id: 0,
         llave: 1,
         llaveBusqueda: {
           $concat: [
@@ -121,8 +118,8 @@ export const getCorrId = async (req: Request, res: Response) => {
         contAtnt1: 1,
         contAtnt2: 1,
         contAtnt3: 1,
-    })
-    .match({llave:llave})
+      })
+      .match({ llave: llave });
     get_response("corres", data[0], llave, res);
   } catch (error) {
     res.json({ msg: error });

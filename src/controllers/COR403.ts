@@ -5,7 +5,7 @@ import {
   edit_response,
   delete_response,
   omitirId,
-  padStart
+  padStart,
 } from "../global/global";
 import { rescorr_model } from "../models/RESCORR";
 import { pdf_res_model } from "../models/pdf-res";
@@ -16,7 +16,7 @@ export const getRescorr = async (req: Request, res: Response) => {
     const data = await rescorr_model.find({}, omitirId);
     get_all_response(data, res);
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     res.json({ msg: error });
   }
 };
@@ -28,7 +28,7 @@ export const postRescorr = async (req: Request, res: Response) => {
       else res.json({ N1: "guardado" });
     });
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     res.json({ msg: error });
   }
 };
@@ -45,7 +45,7 @@ export const putRescorr = async (req: Request, res: Response) => {
       res
     );
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     res.json({ msg: error });
   }
 };
@@ -64,7 +64,7 @@ export const deleteRescorr = async (req: Request, res: Response) => {
       res
     );
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     res.json({ msg: error });
   }
 };
@@ -160,7 +160,7 @@ export const f8Rescorr = async (req: Request, res: Response) => {
       .limit(Number(cantidad));
     get_all_response(data, res);
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     res.json({ msg: error });
   }
 };
@@ -222,7 +222,12 @@ export const getRescorrLlave = async (req: Request, res: Response) => {
         {
           $lookup: {
             from: "macorr",
-            let: { llaveMacorr: [{ $toString: "$clMacor"},{$toInt:"$codigoMacro"}]  },
+            let: {
+              llaveMacorr: [
+                { $toString: "$clMacor" },
+                { $toInt: "$codigoMacro" },
+              ],
+            },
             pipeline: [
               {
                 $match: {
@@ -306,21 +311,31 @@ export const getRescorrLlave = async (req: Request, res: Response) => {
         anoLlave: { $concat: [{ $toString: ["$codResp.anoLlave"] }] },
         contLlave: { $concat: [{ $toString: ["$codResp.cont"] }] },
         swRadi: 1,
-        fecha: {$substr:["$fecha",0,10]},
+        fecha: { $substr: ["$fecha", 0, 10] },
         hora: {
-          $concat: [padStart({ $toString: { $hour: "$fecha" } }, 2, "0"), ":", padStart({ $toString: { $minute: "$fecha" } }, 2, "0")],
+          $concat: [
+            padStart({ $toString: { $hour: "$fecha" } }, 2, "0"),
+            ":",
+            padStart({ $toString: { $minute: "$fecha" } }, 2, "0"),
+          ],
         },
         firma: 1,
         asunto: 1,
         tabla: 1,
         respon: 1,
         cargo: 1,
-        anoRadi:1,
-        contRadi:1,
-        llaveRadi: { $concat: [{ $toString: ["$anoRadi"] },{$toString:["$contRadi"]}] },
+        anoRadi: 1,
+        contRadi: 1,
+        llaveRadi: {
+          $concat: [{ $toString: ["$anoRadi"] }, { $toString: ["$contRadi"] }],
+        },
         fechaRadi: { $substr: ["$fechaRadi", 0, 10] },
         horaRadi: {
-          $concat: [padStart({ $toString: { $hour: "$fechaRadi" } }, 2, "0"), ":", padStart({ $toString: { $minute: "$fechaRadi" } }, 2, "0")],
+          $concat: [
+            padStart({ $toString: { $hour: "$fechaRadi" } }, 2, "0"),
+            ":",
+            padStart({ $toString: { $minute: "$fechaRadi" } }, 2, "0"),
+          ],
         },
         nit: 1, //Para filtrar se convierte a string para que el regex funciones
         tipoCorres: 1,
@@ -355,7 +370,7 @@ export const getRescorrLlave = async (req: Request, res: Response) => {
           $concat: [{ $arrayElemAt: ["$auxtip.descripcion", 0] }],
         },
         codUnifun: 1,
-        descripUnifun:{
+        descripUnifun: {
           $concat: [{ $arrayElemAt: ["$unifun.descripcion", 0] }],
         },
         proceden: 1,
@@ -363,24 +378,28 @@ export const getRescorrLlave = async (req: Request, res: Response) => {
         operModi: 1,
         fechaModi: 1,
         horaModi: {
-          $concat: [padStart({ $toString: { $hour: "$fechaModi" } }, 2, "0"), ":", padStart({ $toString: { $minute: "$fechaModi" } }, 2, "0")],
+          $concat: [
+            padStart({ $toString: { $hour: "$fechaModi" } }, 2, "0"),
+            ":",
+            padStart({ $toString: { $minute: "$fechaModi" } }, 2, "0"),
+          ],
         },
         medio: 1,
         numeroFact: 1,
         nroGuia: 1,
         perRec: 1,
         monto: 1,
-        clMacro:1,
+        clMacro: 1,
         codigoMacro: 1,
-        detalleMacorr:{ $concat: [{ $arrayElemAt: ["$macorr.detalle", 0] }] },
-        operMacorr:{ $concat: [{ $arrayElemAt: ["$macorr.oper", 0] }] },
+        detalleMacorr: { $concat: [{ $arrayElemAt: ["$macorr.detalle", 0] }] },
+        operMacorr: { $concat: [{ $arrayElemAt: ["$macorr.oper", 0] }] },
         descripDeptoremi: {
           $concat: [{ $arrayElemAt: ["$remidep.descripcion", 0] }],
         },
         // deptoremi:,
       })
       .match({ codResp: codResp });
-      //console.log(data[0])
+    //console.log(data[0])
 
     get_response("rescorr", data[0], codResp, res);
   } catch (error) {

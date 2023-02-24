@@ -86,13 +86,20 @@ export const getCorresF8 = async (req: Request, res: Response) => {
         _id: 0,
         llave: 1,
         llaveBusqueda: {
-          $concat: [{ $toString: ["$llave.anoLlave"] }, { $toString: ["$llave.cont"] }],
+          $concat: [
+            { $toString: ["$llave.anoLlave"] },
+            { $toString: ["$llave.cont"] },
+          ],
         },
         anoLlave: { $toString: ["$llave.anoLlave"] },
         contLlave: { $toString: ["$llave.cont"] },
         fecha: { $substr: ["$fecha", 0, 10] },
         hora: {
-          $concat: [padStart({ $toString: { $hour: "$fecha" } }, 2, "0"), ":", padStart({ $toString: { $minute: "$fecha" } }, 2, "0")],
+          $concat: [
+            padStart({ $toString: { $hour: "$fecha" } }, 2, "0"),
+            ":",
+            padStart({ $toString: { $minute: "$fecha" } }, 2, "0"),
+          ],
         },
         nit: { $concat: [{ $toString: "$nit" }] },
         tipoCorres: 1,

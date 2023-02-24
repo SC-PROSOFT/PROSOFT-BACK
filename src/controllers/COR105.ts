@@ -20,7 +20,6 @@ export const getUnifun = async (req: Request, res: Response) => {
 
 export const postUnifun = async (req: Request, res: Response) => {
   try {
-    console.log("Esta es el cuerpo", req.body);
     new unifun_model(req.body).save((err) => {
       if (err) res.json({ msg: err.message });
       else res.json({ N1: "guardado" });
@@ -55,7 +54,6 @@ export const deleteUnifun = async (req: Request, res: Response) => {
 export const getUnifunId = async (req: Request, res: Response) => {
   try {
     const { codigo } = req.params;
-    console.log(codigo)
     const data = await unifun_model.findOne(
       { codigo: codigo },
       {
@@ -73,7 +71,6 @@ export const f8Unifun = async (req: Request, res: Response) => {
   try {
     const { desde, cantidad } = req.params;
     let { dato } = req.query;
-    console.log("Ya llegue 1");
     const data = await unifun_model
       .find(
         { $or: [{ codigo: { $regex: dato, $options: "ix" } }, { descripcion: { $regex: dato, $options: "ix" } }] },
