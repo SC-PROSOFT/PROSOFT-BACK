@@ -279,15 +279,14 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
       if (fechaVenceD != 0) {
         //Esta validacion no deberia ser necesaria, revisar migracion.
         const guardarFecha = fechaVenceD; // Por alguna extraña razon, el setDate de la funcion diasHabilesTranscurridos cambia el valor de fechaVence, dejando la fecha acrtual
-        data[i].fechaVence = `${guardarFecha.getFullYear()}-${
-          guardarFecha.getMonth() + 1
-        }-${guardarFecha.getDate()}`; // Con esta variable solucione eso. (Desconozco si exite otra forma o lo estoy haciendo mal)
+        data[i].fechaVence = `${guardarFecha.getFullYear()}-${guardarFecha.getMonth() + 1}-${guardarFecha.getDate()}`; // Con esta variable solucione eso. (Desconozco si exite otra forma o lo estoy haciendo mal)
       } else {
         data[i].fechaVence = null;
       }
       const of = " de ";
       const max = " máximo ";
       const diasVence = await diasHabilesTranscurridos(fechaVenceD);
+      console.log(diasVence)
       // const diasTrans = await diasHabilesTranscurridos(fechaVenceD);
       data[i].diasTrans = diasVence;
       data[i].diasVence = diasVence + of + data[i].diasTipc + max;

@@ -8,6 +8,7 @@ import {
   get_response,
 } from "../global/global";
 import fs from "fs";
+import path from 'path';
 import { corres_model } from "../models/CORRES";
 import { pdf_res_model } from "../models/pdf-res";
 import { pdf_model } from "../models/PDF";
@@ -366,9 +367,10 @@ export const envioCorreos = async (req: Request, res: Response) => {
     };
     const datos = await pdf_model.findOne({ llave: llave });
     if (datos) {
-      let base64 = "";
-      if (datos?.archivo) base64 = datos?.archivo.toString();
-
+      const directorio = `${datos?.archivo}`;
+      const rutaCompletaArchivo = path.join(directorio);
+      const archivo = fs.readFileSync(rutaCompletaArchivo);
+      const archivoBase64 = archivo.toString("base64");
       const config = {
         host: server_email,
         port: parseInt(puerto),
@@ -387,7 +389,7 @@ export const envioCorreos = async (req: Request, res: Response) => {
         attachments: [
           {
             filename: `${llave.anoLlave}${llave.cont}.pdf`,
-            content: base64,
+            content: archivoBase64,
             encoding: "base64",
           },
         ],

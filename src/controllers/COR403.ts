@@ -10,6 +10,8 @@ import {
 import { rescorr_model } from "../models/RESCORR";
 import { pdf_res_model } from "../models/pdf-res";
 import nodemailer from "nodemailer";
+import fs from 'fs';
+import path from 'path';
 
 export const getRescorr = async (req: Request, res: Response) => {
   try {
@@ -429,8 +431,10 @@ export const envioCorreos = async (req: Request, res: Response) => {
     };
     const datos = await pdf_res_model.findOne({ llave: llave });
     if (datos) {
-      let base64 = "";
-      if (datos?.archivo) base64 = datos?.archivo.toString();
+      const directorio = `${datos?.archivo}`;
+      const rutaCompletaArchivo = path.join(directorio);
+      const archivo = fs.readFileSync(rutaCompletaArchivo);
+      const archivoBase64 = archivo.toString("base64");
 
       const config = {
         host: server_email,
@@ -449,7 +453,7 @@ export const envioCorreos = async (req: Request, res: Response) => {
         attachments: [
           {
             filename: `${llave.anoLlave}${llave.cont}.pdf`,
-            content: base64,
+            content: archivoBase64,
             encoding: "base64",
           },
         ],
