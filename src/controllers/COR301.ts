@@ -125,16 +125,17 @@ export const getImpresionCorr = async (req: Request, res: Response) => {
         estaR: {
           $switch: {
             branches: [
-              {
-                case: { $eq: ["$esta", 1] },
-                then: {
-                  $cond: {
-                    if: { $eq: ["$manejo", 1] },
-                    then: "RESULETA",
-                    else: "EN TRAMITE",
-                  },
-                },
-              },
+              // {
+              //   case: { $eq: ["$esta", 1] },
+              //   then: {
+              //     $cond: {
+              //       if: { $eq: ["$manejo", 1] },
+              //       then: "RESULETA",
+              //       else: "EN TRAMITE",
+              //     },
+              //   },
+              // },
+              { case: { $eq: ["$esta", 1] }, then: "EN TRAMITE" },
               { case: { $eq: ["$esta", 2] }, then: "VENCIDA" },
               { case: { $eq: ["$esta", 3] }, then: "RESUELTA" },
               { case: { $eq: ["$esta", 4] }, then: "RESUELTA" },
