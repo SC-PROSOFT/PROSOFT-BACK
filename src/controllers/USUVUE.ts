@@ -97,7 +97,7 @@ export const getusuvue = async (req: Request, res: Response) => {
         } else res.json({ data: data[0], token });
       } else res.json({ msg: "USER" });
     } else {
-      get_response("usuvue", data, "", res);
+      get_response("usuvue", data, llaveResp, res);
     }
   } catch (error) {
     console.log(error);
@@ -111,6 +111,7 @@ export const cambiarContra = async (req: Request, res: Response) => {
     const user = await usuvue_model.findOne({
       $and: [{ llaveOper: llave }],
     });
+
 
     if (user) {
       const new_password = await bcrypt.hash(atob(nueva_pass), 10);

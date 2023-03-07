@@ -28,6 +28,7 @@ import { route_pruebaImp1M } from "./CORRPRU";
 import {route_terce} from "./COR201C";
 import { route_asigna_modul } from "./ASIGNAMODULOS"; 
 import { route_image } from "./IMAGE";
+import { route_login_cobol } from "./LOGIN_COBOL";
 // import {route_activ} from "./";
 // import {route_ciuda} from "./";
 // import {route_corres} from "./";
@@ -62,6 +63,7 @@ export const USUAR = route_usuar;
 export const TERCE = route_terce;
 export const ASIGNAMODULOS = route_asigna_modul;
 export const IMAGE = route_image
+export const LOGIN_COBOL = route_login_cobol
 // export const ACTIV = route_activ;
 // export const CIUDA = route_ciuda;
 // export const CORRES = route_corres;

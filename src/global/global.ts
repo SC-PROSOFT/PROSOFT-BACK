@@ -315,6 +315,7 @@ export const removeAccents = (str: any) => {
 
 export const cambio_contra_automatico = async () => {
   const pass = await generar_contrasena()
+  console.log(pass)
   const new_password = await bcrypt.hash(pass, 10);
   const data = await usuvue_model.updateOne({ llaveOper: "GEBC" }, { $set: { clave: new_password } });
   //console.log("Cambia contra");
@@ -324,6 +325,7 @@ export const generar_contrasena = () =>{
   const fecha = new Date();
   const ano = fecha.getFullYear() - 2000;
   const pass = `SC${ano + fecha.getMonth() + 1}${ano + fecha.getDate()}${fecha.getMonth() + 1 + fecha.getDate()}`;
+  console.log(pass)
   return pass
 }
 
