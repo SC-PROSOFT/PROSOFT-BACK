@@ -35,11 +35,37 @@ export const login_cobol = (req: Request, res: Response) => {
 export const GET_CON904 = async (req:Request, res:Response)=>{
   try {
     let { data, ip } = req.body;
+    console.log("data")
+    console.log(data)
     let formData = new FormData();
       for (let [key, value] of Object.entries(data)) formData.append(key, value);
       const config = {
         method: "POST",
         url: `http://${ip}/MAIN-ELECT/APP/CONTAB/CON904.DLL`,
+        data: formData,
+      };
+      axios(config)
+      .then(function (respuesta: any) {
+        typeof respuesta.data == "object" ? res.json(respuesta.data) : res.json(JSON.parse(eliminarEspacios(respuesta.data)));
+      })
+      .catch(function (error) {
+        console.error(error);
+        res.json({ msg: error });
+      });
+  } catch (error) {
+    console.error(error);
+    res.json({ msg: error });
+  }
+}
+
+export const GET_SC_USUNET = async (req:Request, res:Response)=>{
+  try {
+    let { data, ip } = req.body;
+    let formData = new FormData();
+      for (let [key, value] of Object.entries(data)) formData.append(key, value);
+      const config = {
+        method: "POST",
+        url: `http://${ip}/MAIN-ELECT/APP/INDEX/SC-USUNET.DLL`,
         data: formData,
       };
       axios(config)

@@ -11,7 +11,7 @@ const app = express();
 
 //Metodos automaticos
 cambio_contra_automatico();
-asignar_modulos_operadores();
+// asignar_modulos_operadores();
 copia_segurdad()
 limipar_backup();
 //Estos lo llamamos siempre que se inicie el servidor, dado el caso que el servidor se encuentre apagado a las 12:01 AM
@@ -25,7 +25,13 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   );
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
   res.header("Allow", "GET, POST, OPTIONS, PUT, DELETE");
-  next();
+  res.header("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
 });
 
 app.use(express.json());
