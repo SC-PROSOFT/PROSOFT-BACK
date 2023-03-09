@@ -82,6 +82,6 @@ export const GET_SC_USUNET = async (req:Request, res:Response)=>{
   }
 }
 
-function eliminarEspacios(cadena: string) {
+export function eliminarEspacios(cadena: string) {
   return cadena.replace(/\s+/g, " ").trim();
 }

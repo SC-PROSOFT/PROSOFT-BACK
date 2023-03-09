@@ -77,6 +77,7 @@ app.use("/api", routes.DNHABIL);
 app.use("/api", routes.ASIGNAMODULOS);
 app.use("/api", routes.IMAGE);
 app.use("/api", routes.LOGIN_COBOL);
+app.use("/api", routes.GET_DLL);
 
 //********Routes*******
 

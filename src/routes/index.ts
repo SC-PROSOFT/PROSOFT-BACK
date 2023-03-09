@@ -1,3 +1,4 @@
+import { route_GET_DLL } from './GET_DLL';
 import { route_con802 } from "./CON802";
 import { route_serco } from "./COR101";
 import { route_depco } from "./COR102";
@@ -64,6 +65,7 @@ export const TERCE = route_terce;
 export const ASIGNAMODULOS = route_asigna_modul;
 export const IMAGE = route_image
 export const LOGIN_COBOL = route_login_cobol
+export const GET_DLL = route_GET_DLL
 // export const ACTIV = route_activ;
 // export const CIUDA = route_ciuda;
 // export const CORRES = route_corres;
