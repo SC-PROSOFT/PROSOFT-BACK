@@ -228,20 +228,18 @@ export async function validar_catidad(model: any) {
 }
 
 export const validarJwt = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.header("x_token");
+  const token = req.headers.authorization;;
   if (!token) {
-    console.error("Se intento ingresar sin token");
     return res.status(401).json({
-      msg: "No tienes acceso.",
+      msg: "Acceso denegado",
     });
   }
-
   try {
-    jwt.verify(token, `${process.env.SECRETKEY}`);
+    jwt.verify(token.split(" ")[1], `${process.env.SECRETKEY}`);
     return next();
   } catch (error) {
     return res.status(401).json({
-      msg: "Acceso denegado, no tiene token correcto",
+      msg: "Token invalido",
     });
   }
 };
