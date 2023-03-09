@@ -6,6 +6,7 @@ import {
 } from "../controllers/IMAGE"
 import multer from "multer";
 import path from "path";
+import { JwtValidator_ } from "../helpers/validators";
 
 export let formato:any
 
@@ -40,5 +41,5 @@ const upload = multer({ storage });
 
 export const route_image = express.Router();
 
-route_image.post(`/image/:codigo`,upload.single("file"),postImage);
-route_image.get("/getImage/:codigo", getImage)
+route_image.post(`/image/:codigo`, JwtValidator_, upload.single("file"),postImage);
+route_image.get("/getImage/:codigo",JwtValidator_, getImage)

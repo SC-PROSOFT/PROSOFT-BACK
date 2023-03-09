@@ -16,6 +16,7 @@ import {
 
 import multer from "multer";
 import path from "path";
+import { JwtValidator_ } from "../helpers/validators";
 
 let storage = multer.diskStorage({
   destination: (req: any, file: any, cb: any) => {
@@ -23,7 +24,7 @@ let storage = multer.diskStorage({
       if (!fs.existsSync("D:\\PDF\\")) fs.mkdirSync("D:\\PDF\\");
       cb(null, "D:\\PDF\\");
     } catch (error) {
-      console.error("ERROR", error);
+      console.error("ERROR", JwtValidator_, error);
     }
   },
   filename: (req: any, file: any, cb: any) => {
@@ -38,7 +39,7 @@ let storage = multer.diskStorage({
         }
       });
     } catch (error) {
-      console.error("ERROR", error);
+      console.error("ERROR", JwtValidator_, error);
     }
   },
 });
@@ -47,16 +48,16 @@ const upload = multer({ storage });
 
 export const route_corres = express.Router();
 
-route_corres.post("/corres", postCorres);
-route_corres.put("/corres", putCorres);
-route_corres.get("/corres/:anoLlave/:cont", getCorres);
-route_corres.delete("/corres/:anoLlave/:cont", deleteCorres);
-route_corres.get("/getCorresF8/:desde/:cantidad", getCorresF8);
-route_corres.post("/enviocCorreo", envioCorreos);
-route_corres.get("/ultimaCorres", ultCorres);
+route_corres.post("/corres", JwtValidator_, postCorres);
+route_corres.put("/corres", JwtValidator_, putCorres);
+route_corres.get("/corres/:anoLlave/:cont", JwtValidator_, getCorres);
+route_corres.delete("/corres/:anoLlave/:cont", JwtValidator_, deleteCorres);
+route_corres.get("/getCorresF8/:desde/:cantidad", JwtValidator_, getCorresF8);
+route_corres.post("/enviocCorreo", JwtValidator_, envioCorreos);
+route_corres.get("/ultimaCorres", JwtValidator_, ultCorres);
 route_corres.post(
-  "/guardarPdf/:anoLlave/:cont",
+  "/guardarPdf/:anoLlave/:cont", JwtValidator_,
   upload.single("file"),
   guardarPdf
 );
-route_corres.get("/buscarPdf/:anoLlave/:cont", buscarPdf);
+route_corres.get("/buscarPdf/:anoLlave/:cont", JwtValidator_, buscarPdf);

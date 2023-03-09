@@ -4,9 +4,9 @@ import { JwtValidator_ } from "../helpers/validators";
 
 export const route_remidep = express.Router();
 
-route_remidep.get("/remidepAll", getRemidep);
-route_remidep.post("/remidep", postRemidep);
-route_remidep.put("/remidep/:codigo", putRemidep);
-route_remidep.delete("/remidep/:codigo", deleteRemidep);
-route_remidep.get("/f8&remidep/:desde/:cantidad", f8Remidep);
-route_remidep.get("/remidep/:codigo", getRemidepId);
+route_remidep.get("/remidepAll", JwtValidator_, getRemidep);
+route_remidep.post("/remidep", JwtValidator_, postRemidep);
+route_remidep.put("/remidep/:codigo", JwtValidator_, putRemidep);
+route_remidep.delete("/remidep/:codigo", JwtValidator_, deleteRemidep);
+route_remidep.get("/f8&remidep/:desde/:cantidad", JwtValidator_, f8Remidep);
+route_remidep.get("/remidep/:codigo", JwtValidator_, getRemidepId);

@@ -6,6 +6,7 @@ import { deleteRescorr, getRescorr, postRescorr, putRescorr, f8Rescorr, ultResCo
 import multer from "multer";
 import path from "path";
 import fs from 'fs'
+import { JwtValidator_ } from "../helpers/validators";
 
 
 let storage = multer.diskStorage({
@@ -13,7 +14,7 @@ let storage = multer.diskStorage({
     try {
       cb(null, "D:/pdf/");
     } catch (error) {
-      console.error("ERROR", error);
+      console.error("ERROR", JwtValidator_, error);
     }
   },
   filename: (req: any, file: any, cb: any) => {
@@ -29,7 +30,7 @@ let storage = multer.diskStorage({
         }
       })
     } catch (error) {
-      console.error("ERROR", error);
+      console.error("ERROR", JwtValidator_, error);
     }
   },
 });
@@ -40,16 +41,16 @@ const upload = multer({ storage });
 
 export const route_rescorr = express.Router();
 
-route_rescorr.get("/rescorr", getRescorr);
-route_rescorr.post("/rescorr", postRescorr);
-route_rescorr.put("/rescorr/:anoLlave/:cont", putRescorr);
-route_rescorr.delete("/rescorr/:anoLlave/:cont", deleteRescorr);
-route_rescorr.get("/f8&rescorr/:desde/:cantidad", f8Rescorr);
-route_rescorr.get("/ultRescorr", ultResCorr);
-route_rescorr.get("/getResLlave/:anoLlave/:cont", getRescorrLlave);
-route_rescorr.post("/enviocCorreo&rescorres", envioCorreos);
+route_rescorr.get("/rescorr", JwtValidator_, getRescorr);
+route_rescorr.post("/rescorr", JwtValidator_, postRescorr);
+route_rescorr.put("/rescorr/:anoLlave/:cont", JwtValidator_, putRescorr);
+route_rescorr.delete("/rescorr/:anoLlave/:cont", JwtValidator_, deleteRescorr);
+route_rescorr.get("/f8&rescorr/:desde/:cantidad", JwtValidator_, f8Rescorr);
+route_rescorr.get("/ultRescorr", JwtValidator_, ultResCorr);
+route_rescorr.get("/getResLlave/:anoLlave/:cont", JwtValidator_, getRescorrLlave);
+route_rescorr.post("/enviocCorreo&rescorres", JwtValidator_, envioCorreos);
 
-route_rescorr.post("/guardarPdf_res/:anoLlave/:cont", upload.single("file"), guardarPdf_res);
-route_rescorr.get("/buscarPdf_res/:anoLlave/:cont", buscarPdf_res);
+route_rescorr.post("/guardarPdf_res/:anoLlave/:cont", JwtValidator_, upload.single("file"), guardarPdf_res);
+route_rescorr.get("/buscarPdf_res/:anoLlave/:cont", JwtValidator_, buscarPdf_res);
 
-// route_macorr.get("/macorr/:cl/:codigo", getRescorrId);
+// route_macorr.get("/macorr/:cl/:codigo", JwtValidator_, getRescorrId);
